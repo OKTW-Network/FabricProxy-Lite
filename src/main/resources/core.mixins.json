@@ -1,12 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.fabricmc.example.mixin",
+  "package": "one.oktw.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  ],
-  "client": [
-    "ExampleMixin"
+    "ClientConnection_AddressAccessor",
+    "ServerLoginNetworkHandler_ProfileAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
