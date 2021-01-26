@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "one.oktw.mixin.hack",
+  "plugin": "one.oktw.FabricProxyLite",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ServerLoginNetworkHandler_SkipKeyPacket"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

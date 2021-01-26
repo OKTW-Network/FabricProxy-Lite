@@ -22,7 +22,8 @@
     ]
   },
   "mixins": [
-    "core.mixins.json"
+    "core.mixins.json",
+    "hack.mixins.json"
   ],
 
   "depends": {

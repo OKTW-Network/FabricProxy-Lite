@@ -9,4 +9,3 @@ This will have the better compatibility with other mods.
 * Start server to generate config
 * Setting velocity `player-info-forwarding-mode` to `modern` and `forwarding-secret`
 * Setting `secret` in `config/Fabric-Lite.toml` match velocity config
-* Set server to **offline mode**
