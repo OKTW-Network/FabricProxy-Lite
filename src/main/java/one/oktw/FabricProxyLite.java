@@ -32,19 +32,20 @@ public class FabricProxyLite implements DedicatedServerModInitializer, IMixinCon
 
     private void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender responseSender) {
         if (!understood) {
-            ServerLoginNetworking.unregisterReceiver(handler, VelocityLib.PLAYER_INFO_CHANNEL);
             handler.disconnect(new LiteralText("This server requires you to connect with Velocity."));
             return;
         }
 
-        if (!VelocityLib.checkIntegrity(buf)) {
-            handler.disconnect(new LiteralText("Unable to verify player details"));
-            return;
-        }
+        synchronizer.waitFor(server.submit(() -> {
+            if (!VelocityLib.checkIntegrity(buf)) {
+                handler.disconnect(new LiteralText("Unable to verify player details"));
+                return;
+            }
 
-        ((ClientConnection_AddressAccessor) handler.connection).setAddress(new java.net.InetSocketAddress(VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) handler.connection.getAddress()).getPort()));
+            ((ClientConnection_AddressAccessor) handler.connection).setAddress(new java.net.InetSocketAddress(VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) handler.connection.getAddress()).getPort()));
 
-        ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(VelocityLib.createProfile(buf));
+            ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(VelocityLib.createProfile(buf));
+        }));
     }
 
     // Only load hack mixin if enabled
