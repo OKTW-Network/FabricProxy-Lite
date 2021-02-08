@@ -8,6 +8,7 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
 @Config(name = "FabricProxy-Lite")
 public class ModConfig implements ConfigData {
     private boolean hackOnlineMode = true;
+    private boolean hackEarlySend = false;
 
     @Comment("Velocity proxy secret")
     private String secret = "";
@@ -16,6 +17,15 @@ public class ModConfig implements ConfigData {
         String env = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
         if (env == null) {
             return hackOnlineMode;
+        } else {
+            return Boolean.parseBoolean(env);
+        }
+    }
+
+    public boolean getHackEarlySend() {
+        String env = System.getenv("FABRIC_PROXY_HACK_FABRIC_API");
+        if (env == null) {
+            return hackEarlySend;
         } else {
             return Boolean.parseBoolean(env);
         }
