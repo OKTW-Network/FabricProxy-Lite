@@ -16,8 +16,9 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// Bundle necessary Fabric API module
+	modImplementation fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+	include fabricApi.module("fabric-networking-api-v1", project.fabric_version)
 
 	modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
 	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"

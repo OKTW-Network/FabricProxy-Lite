@@ -28,6 +28,6 @@
 
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.28"
+    "fabric-networking-api-v1": "*"
   }
 }
