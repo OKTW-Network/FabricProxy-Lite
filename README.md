@@ -1,6 +1,6 @@
 # FabricProxy-Lite
 
-This mod does the samee thing as [FabricProxy](https://github.com/OKTW-Network/FabricProxy) but only suppors Velocity, and uses the Fabric-API to handle
+This mod does the same thing as [FabricProxy](https://github.com/OKTW-Network/FabricProxy) but only suppors Velocity, and uses the Fabric-API to handle
 Velocity packets.
 
 This will have better compatibility with other mods.
