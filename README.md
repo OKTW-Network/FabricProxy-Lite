@@ -1,21 +1,21 @@
 # FabricProxy-Lite
 
-Same as [FabricProxy](https://github.com/OKTW-Network/FabricProxy) but only support velocity and using Fabric-API handle
-velocity packet.
+This mod does the samee thing as [FabricProxy](https://github.com/OKTW-Network/FabricProxy) but only suppors Velocity, and uses the Fabric-API to handle
+Velocity packets.
 
-This will have the better compatibility with other mods.
+This will have better compatibility with other mods.
 
 ## Important
 
-**LuckPerms need enable `hackEarlySend` in config.**
+**LuckPerms on Velocity requires you to enable `hackEarlySend` in the mod's config.**
 
-Because Fabric-API can't send packet before QUERY_START event, so player info(UUID) will not ready at QUERY_START event.
+Because Fabric-API can't send packets before QUERY_START event, so player info(UUID) will not ready at QUERY_START event.
 
-Enable `hackEarlySend` will use mixin for early send packet to velocity.
+Enabling `hackEarlySend` will use mixin to send packets to Velocity early.
 
 ## Setup
 
 * Download mod
 * Start server to generate config
-* Setting velocity `player-info-forwarding-mode` to `modern` and `forwarding-secret`
-* Setting `secret` in `config/Fabric-Lite.toml` match velocity config
+* Set Velocity `player-info-forwarding-mode` to `modern` and `forwarding-secret`
+* Set `secret` in `config/Fabric-Lite.toml` to match your Velocity config.toml
