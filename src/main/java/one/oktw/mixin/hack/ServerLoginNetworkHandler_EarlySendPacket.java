@@ -1,7 +1,8 @@
 package one.oktw.mixin.hack;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
@@ -23,7 +24,7 @@ public class ServerLoginNetworkHandler_EarlySendPacket {
     private void skipKeyPacket(LoginHelloC2SPacket packet, CallbackInfo ci) {
         if (packet.getProfile().isComplete()) return; // Already receive profile form velocity.
 
-        ((ServerLoginNetworkHandlerExtensions) this).getAddon().sendPacket(VelocityLib.PLAYER_INFO_CHANNEL, PacketByteBufs.empty());
+        ((ServerLoginNetworkAddon) ((NetworkHandlerExtensions) this).getAddon()).sendPacket(VelocityLib.PLAYER_INFO_CHANNEL, PacketByteBufs.empty());
         ci.cancel();
     }
 }
