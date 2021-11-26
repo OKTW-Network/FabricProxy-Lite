@@ -1,16 +1,9 @@
 package one.oktw;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
-
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
-@Config(name = "FabricProxy-Lite")
-public class ModConfig implements ConfigData {
+public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
-
-    @Comment("Velocity proxy secret")
     private String secret = "";
 
     public boolean getHackOnlineMode() {
