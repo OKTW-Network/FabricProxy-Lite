@@ -4,13 +4,16 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.encryption.PlayerPublicKey;
+import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
-import one.oktw.mixin.ServerLoginNetworkHandler_DelayHello;
 import one.oktw.mixin.core.ClientConnection_AddressAccessor;
 import one.oktw.mixin.core.ServerLoginNetworkHandler_ProfileAccessor;
 import org.apache.logging.log4j.LogManager;
+
+import java.util.Optional;
 
 class PacketHandler {
     private final ModConfig config;
@@ -19,18 +22,20 @@ class PacketHandler {
         this.config = config;
     }
 
-    void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender responseSender) {
+    void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
         if (!understood) {
             handler.disconnect(Text.of("This server requires you to connect with Velocity."));
             return;
         }
 
         synchronizer.waitFor(server.submit(() -> {
+            int forwardVersion;
             try {
                 if (!VelocityLib.checkIntegrity(buf)) {
                     handler.disconnect(Text.of("Unable to verify player details"));
                     return;
                 }
+                forwardVersion = VelocityLib.checkVersion(buf);
             } catch (Throwable e) {
                 LogManager.getLogger().error("Secret check failed.", e);
                 handler.disconnect(Text.of("Unable to verify player details"));
@@ -48,11 +53,29 @@ class PacketHandler {
                 return;
             }
 
+            // Public key
+            boolean keyEnforce = server.shouldEnforceSecureProfile();
+            Optional<PlayerPublicKey> publicKey = Optional.empty();
+            try {
+                if (forwardVersion >= VelocityLib.MODERN_FORWARDING_WITH_KEY) publicKey = VelocityLib.readKey(buf);
+                if (keyEnforce && publicKey.isEmpty()) {
+                    handler.disconnect(Text.translatable("multiplayer.disconnect.missing_public_key"));
+                    return;
+                }
+            } catch (Exception e) {
+                LogManager.getLogger().error("Public key read failed.", e);
+                if (keyEnforce) {
+                    handler.disconnect(Text.translatable("multiplayer.disconnect.invalid_public_key"));
+                    return;
+                }
+            }
+
             if (config.getHackEarlySend()) {
-                handler.onHello(((ServerLoginNetworkHandler_DelayHello) handler).delayedHelloPacket());
+                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey.map(PlayerPublicKey::data)));
             }
 
             ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(profile);
+            publicKey.ifPresent(((ServerLoginNetworkHandler_ProfileAccessor) handler)::setPublicKey);
         }));
     }
 }

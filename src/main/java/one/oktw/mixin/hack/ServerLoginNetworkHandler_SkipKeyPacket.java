@@ -12,4 +12,9 @@ public class ServerLoginNetworkHandler_SkipKeyPacket {
     private boolean skipKeyPacket(MinecraftServer minecraftServer) {
         return false;
     }
+
+    @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;shouldEnforceSecureProfile()Z"))
+    private boolean skipCheckKey(MinecraftServer minecraftServer) {
+        return false;
+    }
 }
