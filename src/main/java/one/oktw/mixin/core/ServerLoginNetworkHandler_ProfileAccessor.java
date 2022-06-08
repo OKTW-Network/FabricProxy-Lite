@@ -1,4 +1,4 @@
-package one.oktw.mixin;
+package one.oktw.mixin.core;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.network.ServerLoginNetworkHandler;

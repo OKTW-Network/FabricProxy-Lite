@@ -7,9 +7,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
-import one.oktw.mixin.ClientConnection_AddressAccessor;
-import one.oktw.mixin.ServerLoginNetworkHandler_ProfileAccessor;
-import one.oktw.mixin.hack.ServerLoginNetworkHandler_DelayHello;
+import one.oktw.mixin.ServerLoginNetworkHandler_DelayHello;
+import one.oktw.mixin.core.ClientConnection_AddressAccessor;
+import one.oktw.mixin.core.ServerLoginNetworkHandler_ProfileAccessor;
 import org.apache.logging.log4j.LogManager;
 
 class PacketHandler {

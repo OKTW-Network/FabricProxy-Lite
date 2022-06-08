@@ -1,4 +1,4 @@
-package one.oktw.mixin.hack;
+package one.oktw.mixin;
 
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import org.jetbrains.annotations.Nullable;
