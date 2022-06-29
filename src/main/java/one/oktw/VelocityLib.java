@@ -3,6 +3,7 @@ package one.oktw;
 import com.google.common.net.InetAddresses;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.encryption.NetworkEncryptionException;
 import net.minecraft.network.encryption.PlayerPublicKey;
@@ -24,6 +25,7 @@ import static net.minecraft.network.encryption.NetworkEncryptionUtils.decodeEnco
 
 public class VelocityLib {
     public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
+    public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_FORWARDING_WITH_KEY}).asReadOnly());
 
     public static final int MODERN_FORWARDING_DEFAULT = 1;
     public static final int MODERN_FORWARDING_WITH_KEY = 2;

@@ -2,12 +2,10 @@ package one.oktw;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -18,16 +16,18 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
+import static one.oktw.VelocityLib.PLAYER_INFO_CHANNEL;
+import static one.oktw.VelocityLib.PLAYER_INFO_PACKET;
+
 public class FabricProxyLite implements DedicatedServerModInitializer, IMixinConfigPlugin {
     public static ModConfig config;
 
     @Override
     public void onInitializeServer() {
-        PacketByteBuf packet = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_FORWARDING_WITH_KEY}).asReadOnly());
         // Packet receiver
-        ServerLoginNetworking.registerGlobalReceiver(VelocityLib.PLAYER_INFO_CHANNEL, new PacketHandler(config)::handleVelocityPacket);
+        ServerLoginNetworking.registerGlobalReceiver(PLAYER_INFO_CHANNEL, new PacketHandler(config)::handleVelocityPacket);
         if (!config.getHackEarlySend()) {
-            ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> sender.sendPacket(VelocityLib.PLAYER_INFO_CHANNEL, packet));
+            ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> sender.sendPacket(PLAYER_INFO_CHANNEL, PLAYER_INFO_PACKET));
         }
     }
 
