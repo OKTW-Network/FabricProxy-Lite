@@ -12,7 +12,6 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
-	maven { url "https://maven.shedaniel.me/" }
 }
 
 dependencies {
