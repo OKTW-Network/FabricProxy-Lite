@@ -19,17 +19,19 @@ import java.security.PublicKey;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Arrays.binarySearch;
 import static net.minecraft.network.encryption.NetworkEncryptionUtils.decodeEncodedRsaPublicKey;
 
 public class VelocityLib {
     public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
-    public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_FORWARDING_WITH_KEY}).asReadOnly());
+    public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_FORWARDING_WITH_KEY_V2}).asReadOnly());
 
     public static final int MODERN_FORWARDING_DEFAULT = 1;
     public static final int MODERN_FORWARDING_WITH_KEY = 2;
-    private static final int[] SUPPORTED_FORWARDING_VERSION = {MODERN_FORWARDING_DEFAULT, MODERN_FORWARDING_WITH_KEY};
+    public static final int MODERN_FORWARDING_WITH_KEY_V2 = 3;
+    private static final int[] SUPPORTED_FORWARDING_VERSION = {MODERN_FORWARDING_DEFAULT, MODERN_FORWARDING_WITH_KEY, MODERN_FORWARDING_WITH_KEY_V2};
 
     public static boolean checkIntegrity(final PacketByteBuf buf) {
         final byte[] signature = new byte[32];
@@ -78,6 +80,16 @@ public class VelocityLib {
         byte[] signature = buf.readByteArray(4096);
 
         return Optional.of(new PlayerPublicKey.PublicKeyData(expiry, key, signature));
+    }
+
+    public static Optional<UUID> readUuid(final PacketByteBuf buf) {
+        try {
+            if (buf.readBoolean()) {
+                return Optional.of(buf.readUuid());
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+        return Optional.empty();
     }
 
     private static void readProperties(final PacketByteBuf buf, final GameProfile profile) {

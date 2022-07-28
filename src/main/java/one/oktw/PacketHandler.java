@@ -9,11 +9,13 @@ import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
+import one.oktw.mixin.IServerLoginNetworkHandler_RealUUID;
 import one.oktw.mixin.core.ClientConnection_AddressAccessor;
 import one.oktw.mixin.core.ServerLoginNetworkHandler_ProfileAccessor;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Optional;
+import java.util.UUID;
 
 class PacketHandler {
     private final ModConfig config;
@@ -56,8 +58,14 @@ class PacketHandler {
             // Public key
             boolean keyEnforce = server.shouldEnforceSecureProfile();
             Optional<PlayerPublicKey.PublicKeyData> publicKey = Optional.empty();
+            Optional<UUID> profileId = Optional.empty();
             try {
-                if (forwardVersion >= VelocityLib.MODERN_FORWARDING_WITH_KEY) publicKey = VelocityLib.readKey(buf);
+                // Ignore v1 KEY, it not work on 1.19.1+
+                if (forwardVersion >= VelocityLib.MODERN_FORWARDING_WITH_KEY_V2) {
+                    publicKey = VelocityLib.readKey(buf);
+                    profileId = VelocityLib.readUuid(buf);
+                }
+
                 if (keyEnforce && publicKey.isEmpty()) {
                     handler.disconnect(Text.translatable("multiplayer.disconnect.missing_public_key"));
                     return;
@@ -71,11 +79,12 @@ class PacketHandler {
             }
 
             if (config.getHackEarlySend()) {
-                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey, Optional.of(profile.getId())));
+                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey, profileId.or(() ->Optional.of(profile.getId()))));
             }
 
             ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(profile);
             publicKey.ifPresent(((ServerLoginNetworkHandler_ProfileAccessor) handler)::setPublicKeyData);
+            profileId.ifPresent(((IServerLoginNetworkHandler_RealUUID) handler)::setRealUUID);
         }));
     }
 }
