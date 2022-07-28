@@ -55,7 +55,7 @@ class PacketHandler {
 
             // Public key
             boolean keyEnforce = server.shouldEnforceSecureProfile();
-            Optional<PlayerPublicKey> publicKey = Optional.empty();
+            Optional<PlayerPublicKey.PublicKeyData> publicKey = Optional.empty();
             try {
                 if (forwardVersion >= VelocityLib.MODERN_FORWARDING_WITH_KEY) publicKey = VelocityLib.readKey(buf);
                 if (keyEnforce && publicKey.isEmpty()) {
@@ -71,11 +71,11 @@ class PacketHandler {
             }
 
             if (config.getHackEarlySend()) {
-                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey.map(PlayerPublicKey::data)));
+                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey, Optional.of(profile.getId())));
             }
 
             ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(profile);
-            publicKey.ifPresent(((ServerLoginNetworkHandler_ProfileAccessor) handler)::setPublicKey);
+            publicKey.ifPresent(((ServerLoginNetworkHandler_ProfileAccessor) handler)::setPublicKeyData);
         }));
     }
 }

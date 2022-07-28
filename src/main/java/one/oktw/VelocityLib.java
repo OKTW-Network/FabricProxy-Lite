@@ -72,12 +72,12 @@ public class VelocityLib {
         return profile;
     }
 
-    public static Optional<PlayerPublicKey> readKey(final PacketByteBuf buf) throws NetworkEncryptionException {
+    public static Optional<PlayerPublicKey.PublicKeyData> readKey(final PacketByteBuf buf) throws NetworkEncryptionException {
         Instant expiry = Instant.ofEpochMilli(buf.readLong());
         PublicKey key = decodeEncodedRsaPublicKey(buf.readByteArray(512));
         byte[] signature = buf.readByteArray(4096);
 
-        return Optional.of(new PlayerPublicKey(new PlayerPublicKey.PublicKeyData(expiry, key, signature)));
+        return Optional.of(new PlayerPublicKey.PublicKeyData(expiry, key, signature));
     }
 
     private static void readProperties(final PacketByteBuf buf, final GameProfile profile) {

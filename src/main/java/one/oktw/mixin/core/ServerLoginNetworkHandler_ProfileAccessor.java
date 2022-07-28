@@ -12,5 +12,5 @@ public interface ServerLoginNetworkHandler_ProfileAccessor {
     void setProfile(GameProfile profile);
 
     @Accessor
-    void setPublicKey(PlayerPublicKey publicKey);
+    void setPublicKeyData(PlayerPublicKey.PublicKeyData publicKeyData);
 }
