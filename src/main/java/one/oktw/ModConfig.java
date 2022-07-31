@@ -4,6 +4,7 @@ package one.oktw;
 public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
+    private boolean hackMessageChain = true;
     private String secret = "";
 
     public boolean getHackOnlineMode() {
@@ -19,6 +20,15 @@ public class ModConfig {
         String env = System.getenv("FABRIC_PROXY_HACK_FABRIC_API");
         if (env == null) {
             return hackEarlySend;
+        } else {
+            return Boolean.parseBoolean(env);
+        }
+    }
+
+    public boolean getHackMessageChain() {
+        String env = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
+        if (env == null) {
+            return hackMessageChain;
         } else {
             return Boolean.parseBoolean(env);
         }

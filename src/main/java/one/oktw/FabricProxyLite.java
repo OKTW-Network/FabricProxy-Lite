@@ -34,18 +34,20 @@ public class FabricProxyLite implements DedicatedServerModInitializer, IMixinCon
     // Only load hack mixin if enabled
     @Override
     public void onLoad(String mixinPackage) {
-        if (config == null) {
-            var configFile = FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml");
-            if (!Files.exists(configFile)) {
-                config = new ModConfig();
-                try {
-                    new TomlWriter().write(config, configFile.toFile());
-                } catch (IOException e) {
-                    LogManager.getLogger().error("Init config failed.", e);
-                }
-            } else {
-                config = new Toml().read(FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml").toFile()).to(ModConfig.class);
-            }
+        if (config != null) return;
+
+        var configFile = FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml");
+        if (!Files.exists(configFile)) {
+            config = new ModConfig();
+        } else {
+            config = new Toml().read(FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml").toFile()).to(ModConfig.class);
+        }
+
+        // Update config
+        try {
+            new TomlWriter().write(config, configFile.toFile());
+        } catch (IOException e) {
+            LogManager.getLogger().error("Init config failed.", e);
         }
     }
 
@@ -57,7 +59,8 @@ public class FabricProxyLite implements DedicatedServerModInitializer, IMixinCon
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return mixinClassName.equals("one.oktw.mixin.hack.ServerLoginNetworkHandler_EarlySendPacket") && config.getHackEarlySend()
-                || mixinClassName.equals("one.oktw.mixin.hack.ServerLoginNetworkHandler_SkipKeyPacket") && config.getHackOnlineMode();
+                || mixinClassName.equals("one.oktw.mixin.hack.ServerLoginNetworkHandler_SkipKeyPacket") && config.getHackOnlineMode()
+                || mixinClassName.endsWith("SkipFirstMessageValidation") && config.getHackMessageChain();
     }
 
     @Override
