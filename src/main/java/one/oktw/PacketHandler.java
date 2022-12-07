@@ -79,11 +79,10 @@ class PacketHandler {
             }
 
             if (config.getHackEarlySend()) {
-                handler.onHello(new LoginHelloC2SPacket(profile.getName(), publicKey, profileId.or(() ->Optional.of(profile.getId()))));
+                handler.onHello(new LoginHelloC2SPacket(profile.getName(), profileId.or(() ->Optional.of(profile.getId()))));
             }
 
             ((ServerLoginNetworkHandler_ProfileAccessor) handler).setProfile(profile);
-            publicKey.ifPresent(((ServerLoginNetworkHandler_ProfileAccessor) handler)::setPublicKeyData);
             profileId.ifPresent(((IServerLoginNetworkHandler_RealUUID) handler)::setRealUUID);
         }));
     }
