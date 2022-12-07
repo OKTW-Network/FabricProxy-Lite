@@ -65,11 +65,6 @@ class PacketHandler {
                     publicKey = VelocityLib.readKey(buf);
                     profileId = VelocityLib.readUuid(buf);
                 }
-
-                if (keyEnforce && publicKey.isEmpty()) {
-                    handler.disconnect(Text.translatable("multiplayer.disconnect.missing_public_key"));
-                    return;
-                }
             } catch (Exception e) {
                 LogManager.getLogger().error("Public key read failed.", e);
                 if (keyEnforce) {
