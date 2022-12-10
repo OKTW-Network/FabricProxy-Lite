@@ -5,8 +5,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.encryption.NetworkEncryptionException;
-import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.util.Identifier;
 
 import javax.crypto.Mac;
@@ -15,23 +13,19 @@ import java.net.InetAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.time.Instant;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.Arrays.binarySearch;
-import static net.minecraft.network.encryption.NetworkEncryptionUtils.decodeEncodedRsaPublicKey;
 
 public class VelocityLib {
     public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
-    public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_FORWARDING_WITH_KEY_V2}).asReadOnly());
+    public static final int MODERN_LAZY_SESSION = 4;
 
     public static final int MODERN_FORWARDING_DEFAULT = 1;
     public static final int MODERN_FORWARDING_WITH_KEY = 2;
     public static final int MODERN_FORWARDING_WITH_KEY_V2 = 3;
-    private static final int[] SUPPORTED_FORWARDING_VERSION = {MODERN_FORWARDING_DEFAULT, MODERN_FORWARDING_WITH_KEY, MODERN_FORWARDING_WITH_KEY_V2};
+    public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_LAZY_SESSION}).asReadOnly());
+    private static final int[] SUPPORTED_FORWARDING_VERSION = {MODERN_FORWARDING_DEFAULT, MODERN_LAZY_SESSION};
 
     public static boolean checkIntegrity(final PacketByteBuf buf) {
         final byte[] signature = new byte[32];
@@ -54,17 +48,15 @@ public class VelocityLib {
         return true;
     }
 
-    public static int checkVersion(final PacketByteBuf buf) {
+    public static void checkVersion(final PacketByteBuf buf) {
         int version = buf.readVarInt();
         if (binarySearch(SUPPORTED_FORWARDING_VERSION, version) < 0) {
             throw new IllegalStateException("Unsupported forwarding version " + version + ", supported " + Arrays.toString(SUPPORTED_FORWARDING_VERSION));
         }
 
-        return version;
     }
 
     public static InetAddress readAddress(final PacketByteBuf buf) {
-        //noinspection UnstableApiUsage
         return InetAddresses.forString(buf.readString(Short.MAX_VALUE));
     }
 
@@ -72,24 +64,6 @@ public class VelocityLib {
         final GameProfile profile = new GameProfile(buf.readUuid(), buf.readString(16));
         readProperties(buf, profile);
         return profile;
-    }
-
-    public static Optional<PlayerPublicKey.PublicKeyData> readKey(final PacketByteBuf buf) throws NetworkEncryptionException {
-        Instant expiry = Instant.ofEpochMilli(buf.readLong());
-        PublicKey key = decodeEncodedRsaPublicKey(buf.readByteArray(512));
-        byte[] signature = buf.readByteArray(4096);
-
-        return Optional.of(new PlayerPublicKey.PublicKeyData(expiry, key, signature));
-    }
-
-    public static Optional<UUID> readUuid(final PacketByteBuf buf) {
-        try {
-            if (buf.readBoolean()) {
-                return Optional.of(buf.readUuid());
-            }
-        } catch (IndexOutOfBoundsException ignored) {
-        }
-        return Optional.empty();
     }
 
     private static void readProperties(final PacketByteBuf buf, final GameProfile profile) {

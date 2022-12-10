@@ -10,7 +10,4 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ServerLoginNetworkHandler_ProfileAccessor {
     @Accessor
     void setProfile(GameProfile profile);
-
-    @Accessor
-    void setPublicKeyData(PlayerPublicKey.PublicKeyData publicKeyData);
 }

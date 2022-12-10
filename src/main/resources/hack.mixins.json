@@ -5,11 +5,9 @@
   "plugin": "one.oktw.FabricProxyLite",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AcknowledgmentValidator_SkipFirstMessageValidation",
-    "MessageChain_SkipFirstMessageValidation",
     "ServerLoginNetworkHandler_EarlySendPacket",
     "ServerLoginNetworkHandler_SkipKeyPacket",
-    "SignedMessage_SkipFirstMessageValidation"
+    "ServerPlayNetworkHandler_HackMessageChain"
   ],
   "injectors": {
     "defaultRequire": 1
