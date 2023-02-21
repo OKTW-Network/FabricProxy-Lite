@@ -19,3 +19,4 @@ Enable `hackEarlySend` will use mixin for early send packet to velocity.
 * Start server to generate config
 * Setting velocity `player-info-forwarding-mode` to `modern` and `forwarding-secret`
 * Setting `secret` in `config/FabricProxy-Lite.toml` match velocity config
+build
