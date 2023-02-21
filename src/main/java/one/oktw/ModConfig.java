@@ -5,6 +5,7 @@ public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
     private boolean hackMessageChain = true;
+    private boolean allowBypassProxy = false;
     private String secret = "";
 
     public boolean getHackOnlineMode() {
@@ -29,6 +30,15 @@ public class ModConfig {
         String env = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
         if (env == null) {
             return hackMessageChain;
+        } else {
+            return Boolean.parseBoolean(env);
+        }
+    }
+    
+    public boolean getHackMessageChain() {
+        String env = System.getenv("ALLOW_BYPASS_PROXY");
+        if (env == null) {
+            return allowBypassProxy;
         } else {
             return Boolean.parseBoolean(env);
         }
