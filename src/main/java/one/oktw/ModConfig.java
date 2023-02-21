@@ -35,7 +35,7 @@ public class ModConfig {
         }
     }
     
-    public boolean getHackMessageChain() {
+    public boolean getallowBypassProxy() {
         String env = System.getenv("ALLOW_BYPASS_PROXY");
         if (env == null) {
             return allowBypassProxy;
