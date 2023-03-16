@@ -25,7 +25,7 @@ public class ServerLoginNetworkHandler_EarlySendPacket {
 
     @Shadow
     @Final
-    public ClientConnection connection;
+    ClientConnection connection;
 
     @Inject(method = "onHello", at = @At(value = "HEAD"), cancellable = true)
     private void skipKeyPacket(LoginHelloC2SPacket packet, CallbackInfo ci) {
