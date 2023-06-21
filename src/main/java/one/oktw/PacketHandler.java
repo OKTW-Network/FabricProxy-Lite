@@ -22,9 +22,8 @@ class PacketHandler {
     PacketHandler(ModConfig config) {
         this.config = config;
     }
-
     void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
-        if (!understood) {
+        if (!understood && config.getallowBypassProxy() == false) {
             handler.disconnect(Text.of("This server requires you to connect with Velocity."));
             return;
         }
