@@ -13,10 +13,10 @@ public class ModConfig {
         if (env == null) {
             return disconnectMessage;
         } else {
-            return (env);
+            return env;
         }
     }
-    
+
     public boolean getHackOnlineMode() {
         String env = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
         if (env == null) {
