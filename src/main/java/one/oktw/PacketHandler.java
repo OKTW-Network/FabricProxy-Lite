@@ -25,7 +25,7 @@ class PacketHandler {
 
     void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
         if (!understood) {
-            handler.disconnect(Text.of("This server requires you to connect with Velocity."));
+            handler.disconnect(Text.of(config.getAbortedMessage()));
             return;
         }
 

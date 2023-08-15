@@ -5,7 +5,17 @@ public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
     private boolean hackMessageChain = true;
+    private String disconnectMessage = "This server requires you to connect with Velocity.";
     private String secret = "";
+
+    public String getAbortedMessage() {
+        String env = System.getenv("FABRIC_PROXY_MESSAGE");
+        if (env == null) {
+            return disconnectMessage;
+        } else {
+            return env;
+        }
+    }
 
     public boolean getHackOnlineMode() {
         String env = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
