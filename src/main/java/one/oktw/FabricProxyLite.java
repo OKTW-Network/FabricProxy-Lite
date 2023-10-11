@@ -40,7 +40,7 @@ public class FabricProxyLite implements DedicatedServerModInitializer, IMixinCon
         if (!Files.exists(configFile)) {
             config = new ModConfig();
         } else {
-            config = new Toml().read(FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml").toFile()).to(ModConfig.class);
+            config = new Toml().read(configFile.toFile()).to(ModConfig.class);
         }
 
         // Update config

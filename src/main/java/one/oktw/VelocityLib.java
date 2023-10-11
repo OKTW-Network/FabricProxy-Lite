@@ -19,11 +19,10 @@ import static java.util.Arrays.binarySearch;
 
 public class VelocityLib {
     public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
-    public static final int MODERN_LAZY_SESSION = 4;
-
     public static final int MODERN_FORWARDING_DEFAULT = 1;
     public static final int MODERN_FORWARDING_WITH_KEY = 2;
     public static final int MODERN_FORWARDING_WITH_KEY_V2 = 3;
+    public static final int MODERN_LAZY_SESSION = 4;
     public static final PacketByteBuf PLAYER_INFO_PACKET = new PacketByteBuf(Unpooled.wrappedBuffer(new byte[]{(byte) VelocityLib.MODERN_LAZY_SESSION}).asReadOnly());
     private static final int[] SUPPORTED_FORWARDING_VERSION = {MODERN_FORWARDING_DEFAULT, MODERN_LAZY_SESSION};
 
