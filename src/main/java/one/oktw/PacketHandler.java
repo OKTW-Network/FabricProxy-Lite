@@ -20,12 +20,13 @@ class PacketHandler {
         this.config = config;
     }
 
-    void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
-        if (!understood) {
+    void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood,
+            PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
+        if (!understood && !config.getallowBypassProxy()) {
+
             handler.disconnect(Text.of(config.getAbortedMessage()));
             return;
         }
-
         synchronizer.waitFor(server.submit(() -> {
             try {
                 if (!VelocityLib.checkIntegrity(buf)) {
@@ -34,13 +35,16 @@ class PacketHandler {
                 }
                 VelocityLib.checkVersion(buf);
             } catch (Throwable e) {
-                LogManager.getLogger().error("Secret check failed.", e);
-                handler.disconnect(Text.of("Unable to verify player details"));
-                return;
+                if (!config.getallowBypassProxy()) {
+                    LogManager.getLogger().error("Secret check failed.", e);
+                    handler.disconnect(Text.of("Unable to verify player details"));
+                    return;
+                }
             }
 
             ClientConnection connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
-            ((ClientConnection_AddressAccessor) connection).setAddress(new java.net.InetSocketAddress(VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) (connection.getAddress())).getPort()));
+            ((ClientConnection_AddressAccessor) connection).setAddress(new java.net.InetSocketAddress(
+                    VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) (connection.getAddress())).getPort()));
 
             GameProfile profile;
             try {
@@ -50,7 +54,10 @@ class PacketHandler {
                 handler.disconnect(Text.of("Unable to read player profile"));
                 return;
             }
-
+            if (config.getallowBypassProxy() && !understood) {
+                handler.onHello(new LoginHelloC2SPacket(profile.getName(), profile.getId()));
+                return;
+            }
             if (config.getHackEarlySend()) {
                 handler.onHello(new LoginHelloC2SPacket(profile.getName(), profile.getId()));
             }
