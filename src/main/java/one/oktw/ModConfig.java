@@ -1,11 +1,15 @@
 package one.oktw;
 
-@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
+@SuppressWarnings({ "FieldCanBeLocal", "FieldMayBeFinal" })
 public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
     private boolean hackMessageChain = true;
     private String disconnectMessage = "This server requires you to connect with Velocity.";
+    private boolean allowBypassProxy = false;
+    private boolean allowLocalOffline = false;
+    private String localIp = "/127.0.0.1";
+
     private String secret = "";
 
     public String getAbortedMessage() {
@@ -21,6 +25,23 @@ public class ModConfig {
         String env = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
         if (env == null) {
             return hackOnlineMode;
+        } else {
+            return Boolean.parseBoolean(env);
+        }
+    }
+    public String getLocalIp() {
+        String env = System.getenv("FABRIC_PROXY_LOCAL_IP");
+        if (env == null) {
+            return localIp;
+        } else {
+            return env;
+        }
+    }
+
+    public boolean getAllowLocalOffline() {
+        String env = System.getenv("FABRIC_PROXY_ALLOW_LOCAL_OFFLINE");
+        if (env == null) {
+            return allowLocalOffline;
         } else {
             return Boolean.parseBoolean(env);
         }
@@ -52,4 +73,14 @@ public class ModConfig {
             return env;
         }
     }
+
+    public boolean getallowBypassProxy() {
+        String env = System.getenv("ALLOW_BYPASS_PROXY");
+        if (env == null) {
+            return allowBypassProxy;
+        } else {
+            return Boolean.parseBoolean(env);
+        }
+    }
+
 }
