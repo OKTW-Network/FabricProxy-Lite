@@ -18,7 +18,7 @@ import java.util.Arrays;
 import static java.util.Arrays.binarySearch;
 
 public class VelocityLib {
-    public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
+    public static final Identifier PLAYER_INFO_CHANNEL = Identifier.of("velocity", "player_info");
     public static final int MODERN_FORWARDING_DEFAULT = 1;
     public static final int MODERN_FORWARDING_WITH_KEY = 2;
     public static final int MODERN_FORWARDING_WITH_KEY_V2 = 3;
