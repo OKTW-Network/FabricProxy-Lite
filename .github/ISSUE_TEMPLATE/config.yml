@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature request
+    about: The team currently has no plans to add more features, but you can post your reasons for adding new features in the discussion.
+    url: https://github.com/OKTW-Network/FabricProxy-Lite/discussions/new?category=general
+  - name: Server Setup Help
+    about: Ask the community about any issues with mods servers behind a proxy that are not caused by FabricProxy-Lite.
+    url: https://github.com/OKTW-Network/FabricProxy-Lite/discussions/new?category=server-setup-help

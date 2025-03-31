@@ -1,0 +1,90 @@
+name: Bug Report
+description: Report issues caused by FabricProxy-Lite
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting an issue, please ensure the following:
+        * Confirm that the issue is caused by FabricProxy-Lite
+          * You can try remove FabricProxy-Lite and check if the issue persists.
+          * If the problem is not caused by FabricProxy-Lite, you can post it in the [discussion](https://github.com/OKTW-Network/FabricProxy-Lite/discussions/new?category=server-setup-help) to seek help from people who have encountered similar problems.
+        * Try to install the FabricAPI corresponding to the Minecraft version.
+        * Try installing [CrossStitch](https://modrinth.com/mod/crossstitch) if you don't have it already.
+  - id: describe
+    type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - id: behavior
+    type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - id: minecraft-version
+    type: input
+    attributes:
+      label: Minecraft version
+    validations:
+      required: true
+  - id: mod-version
+    type: input
+    attributes:
+      label: FabricProxy-Lite version
+    validations:
+      required: true
+  - id: fabric-version
+    type: input
+    attributes:
+      label: Fabric API version
+      description: Leave blank if Fabric-API is not installed
+    validations:
+      required: false
+  - id: velocity-version
+    type: input
+    attributes:
+      label: Velocity version
+    validations:
+      required: true
+  - id: config
+    type: textarea
+    attributes:
+      label: FabricProxy-Lite.toml
+      description: Provide you config (without secret)
+      render: toml
+    validations:
+      required: true
+  - id: server-log
+    type: textarea
+    attributes:
+      label: Server log
+      description: Provide as complete a server log as possible, preferably including a list of mods.
+      render: text
+    validations:
+      required: true
+  - id: proxy-log
+    type: textarea
+    attributes:
+      label: Proxy log
+      description: Provide any related logs on the proxy side, leave it blank if you are sure the issue is not related to the proxy.
+      render: text
+    validations:
+      required: false
+  - id: client-log
+    type: textarea
+    attributes:
+      label: Client log
+      description: Provide any related logs on the client side, leave it blank if you are sure the issue is not related to the client.
+      render: text
+    validations:
+      required: false
+  - id: additional
+    type: textarea
+    attributes:
+      label: Additional Information
+      description: Provide more information about the issue.
+    validations:
+      required: false
