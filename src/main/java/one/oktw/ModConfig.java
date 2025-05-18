@@ -4,6 +4,7 @@ import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
 import org.apache.logging.log4j.LogManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,10 +24,15 @@ public class ModConfig {
             config = new ModConfig();
         }
 
-        try {
-            new TomlWriter().write(config, configPath.toFile());
-        } catch (IOException e) {
-            LogManager.getLogger().error("Init config failed.", e);
+        File configFile = configPath.toFile();
+        if(configFile.canWrite()) {
+            try {
+                new TomlWriter().write(config, configFile);
+            } catch (IOException e) {
+                LogManager.getLogger().error("Init config failed.", e);
+            }
+        } else {
+            LogManager.getLogger().info("FabricProxy-Lite Config file is not writable");
         }
 
         String envHackOnlineMode = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
