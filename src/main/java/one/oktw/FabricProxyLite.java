@@ -1,18 +1,13 @@
 package one.oktw;
 
-import com.moandjiezana.toml.Toml;
-import com.moandjiezana.toml.TomlWriter;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
@@ -37,18 +32,7 @@ public class FabricProxyLite implements DedicatedServerModInitializer, IMixinCon
         if (config != null) return;
 
         var configFile = FabricLoader.getInstance().getConfigDir().resolve("FabricProxy-Lite.toml");
-        if (!Files.exists(configFile)) {
-            config = new ModConfig();
-        } else {
-            config = new Toml().read(configFile.toFile()).to(ModConfig.class);
-        }
-
-        // Update config
-        try {
-            new TomlWriter().write(config, configFile.toFile());
-        } catch (IOException e) {
-            LogManager.getLogger().error("Init config failed.", e);
-        }
+        config = ModConfig.load(configFile);
     }
 
     @Override
