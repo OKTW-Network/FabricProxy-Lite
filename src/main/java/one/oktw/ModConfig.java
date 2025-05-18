@@ -52,6 +52,15 @@ public class ModConfig {
         String envSecret = System.getenv("FABRIC_PROXY_SECRET");
         if(envSecret != null) {
             config.secret = envSecret;
+        } else {
+            String envSecretFile = System.getenv("FABRIC_PROXY_SECRET_FILE");
+            if(envSecretFile != null) {
+                try {
+                    config.secret = Files.readString(Path.of(envSecretFile));
+                } catch (IOException e) {
+                    LogManager.getLogger().error("Unable to read secret file {}: {}", envSecretFile, e);
+                }
+            }
         }
 
         return config;
