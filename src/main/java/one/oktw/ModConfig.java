@@ -1,6 +1,14 @@
 package one.oktw;
 
-@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
+import com.moandjiezana.toml.Toml;
+import com.moandjiezana.toml.TomlWriter;
+import org.apache.logging.log4j.LogManager;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
@@ -8,48 +16,79 @@ public class ModConfig {
     private String disconnectMessage = "This server requires you to connect with Velocity.";
     private String secret = "";
 
-    public String getAbortedMessage() {
-        String env = System.getenv("FABRIC_PROXY_MESSAGE");
-        if (env == null) {
-            return disconnectMessage;
+    public static ModConfig load(Path configPath) {
+        ModConfig config;
+        if(Files.exists(configPath)) {
+            config = new Toml().read(configPath.toFile()).to(ModConfig.class);
         } else {
-            return env;
+            config = new ModConfig();
         }
+
+        File configFile = configPath.toFile();
+        if(configFile.canWrite()) {
+            try {
+                new TomlWriter().write(config, configFile);
+            } catch (IOException e) {
+                LogManager.getLogger().error("Init config failed.", e);
+            }
+        } else {
+            LogManager.getLogger().info("FabricProxy-Lite Config file is not writable");
+        }
+
+        String envHackOnlineMode = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
+        if(envHackOnlineMode != null) {
+            config.hackOnlineMode = Boolean.parseBoolean(envHackOnlineMode);
+        }
+
+        String envHackSendEarly = System.getenv("FABRIC_PROXY_HACK_FABRIC_API");
+        if(envHackSendEarly != null) {
+            config.hackEarlySend = Boolean.parseBoolean(envHackSendEarly);
+        }
+
+        String envHackMessageChain = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
+        if(envHackMessageChain != null) {
+            config.hackMessageChain = Boolean.parseBoolean(envHackMessageChain);
+        }
+
+        String envDisconnectMessage = System.getenv("FABRIC_PROXY_MESSAGE");
+        if(envDisconnectMessage != null) {
+            config.disconnectMessage = envDisconnectMessage;
+        }
+
+        String envSecret = System.getenv("FABRIC_PROXY_SECRET");
+        if(envSecret != null) {
+            config.secret = envSecret;
+        } else {
+            String envSecretFile = System.getenv("FABRIC_PROXY_SECRET_FILE");
+            if(envSecretFile != null) {
+                try {
+                    config.secret = Files.readString(Path.of(envSecretFile));
+                } catch (IOException e) {
+                    LogManager.getLogger().error("Unable to read secret file {}: {}", envSecretFile, e);
+                }
+            }
+        }
+
+        return config;
+    }
+
+    public String getAbortedMessage() {
+        return disconnectMessage;
     }
 
     public boolean getHackOnlineMode() {
-        String env = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
-        if (env == null) {
-            return hackOnlineMode;
-        } else {
-            return Boolean.parseBoolean(env);
-        }
+        return hackOnlineMode;
     }
 
     public boolean getHackEarlySend() {
-        String env = System.getenv("FABRIC_PROXY_HACK_FABRIC_API");
-        if (env == null) {
-            return hackEarlySend;
-        } else {
-            return Boolean.parseBoolean(env);
-        }
+        return hackEarlySend;
     }
 
     public boolean getHackMessageChain() {
-        String env = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
-        if (env == null) {
-            return hackMessageChain;
-        } else {
-            return Boolean.parseBoolean(env);
-        }
+        return hackMessageChain;
     }
 
     public String getSecret() {
-        String env = System.getenv("FABRIC_PROXY_SECRET");
-        if (env == null) {
-            return secret;
-        } else {
-            return env;
-        }
+        return secret;
     }
 }
