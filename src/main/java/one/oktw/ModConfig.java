@@ -12,7 +12,7 @@ import java.nio.file.Path;
 public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
-    private boolean hackMessageChain = true;
+    private boolean hackMessageChain = false;
     private String disconnectMessage = "This server requires you to connect with Velocity.";
     private String secret = "";
 
