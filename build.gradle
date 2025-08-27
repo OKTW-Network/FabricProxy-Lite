@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.6-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -22,8 +22,7 @@ dependencies {
 
 	// Bundle necessary Fabric API module
 	modImplementation fabricApi.module("fabric-networking-api-v1", project.fabric_version)
-	include fabricApi.module("fabric-api-base", project.fabric_version)
-	include fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+	modImplementation fabricApi.module("fabric-api-base", project.fabric_version)
 
 	modImplementation "com.moandjiezana.toml:toml4j:0.7.2"
 	include "com.moandjiezana.toml:toml4j:0.7.2"

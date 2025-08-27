@@ -12,7 +12,7 @@ import java.nio.file.Path;
 public class ModConfig {
     private boolean hackOnlineMode = true;
     private boolean hackEarlySend = false;
-    private boolean hackMessageChain = true;
+    private boolean hackMessageChain = false;
     private String disconnectMessage = "This server requires you to connect with Velocity.";
     private String secret = "";
 
@@ -40,9 +40,9 @@ public class ModConfig {
             config.hackOnlineMode = Boolean.parseBoolean(envHackOnlineMode);
         }
 
-        String envHackSendEarly = System.getenv("FABRIC_PROXY_HACK_FABRIC_API");
-        if(envHackSendEarly != null) {
-            config.hackEarlySend = Boolean.parseBoolean(envHackSendEarly);
+        String envHackEarlySend = System.getenv("FABRIC_PROXY_HACK_EARLY_SEND");
+        if(envHackEarlySend != null) {
+            config.hackEarlySend = Boolean.parseBoolean(envHackEarlySend);
         }
 
         String envHackMessageChain = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
@@ -50,7 +50,7 @@ public class ModConfig {
             config.hackMessageChain = Boolean.parseBoolean(envHackMessageChain);
         }
 
-        String envDisconnectMessage = System.getenv("FABRIC_PROXY_MESSAGE");
+        String envDisconnectMessage = System.getenv("FABRIC_PROXY_DISCONNECT_MESSAGE");
         if(envDisconnectMessage != null) {
             config.disconnectMessage = envDisconnectMessage;
         }

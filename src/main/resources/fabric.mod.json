@@ -23,8 +23,9 @@
     "hack.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
+    "fabricloader": ">=0.16.14",
     "fabric-networking-api-v1": "*",
+    "fabric-api": ">=0.100.1",
     "minecraft": ">=1.21",
     "java": ">=21"
   }
