@@ -25,7 +25,7 @@ public class ModConfig {
         }
 
         File configFile = configPath.toFile();
-        if(configFile.canWrite()) {
+        if(!configFile.exists() || configFile.canWrite()) {
             try {
                 new TomlWriter().write(config, configFile);
             } catch (IOException e) {
