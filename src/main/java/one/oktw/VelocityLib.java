@@ -1,8 +1,10 @@
 package one.oktw;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.net.InetAddresses;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -60,18 +62,19 @@ public class VelocityLib {
     }
 
     public static GameProfile createProfile(final PacketByteBuf buf) {
-        final GameProfile profile = new GameProfile(buf.readUuid(), buf.readString(16));
-        readProperties(buf, profile);
-        return profile;
+        return new GameProfile(buf.readUuid(), buf.readString(16), readProperties(buf));
     }
 
-    private static void readProperties(final PacketByteBuf buf, final GameProfile profile) {
+    private static PropertyMap readProperties(final PacketByteBuf buf) {
+        final ImmutableMultimap.Builder<String, Property> propertiesBuilder = ImmutableMultimap.builder();
         final int properties = buf.readVarInt();
         for (int i1 = 0; i1 < properties; i1++) {
             final String name = buf.readString(Short.MAX_VALUE);
             final String value = buf.readString(Short.MAX_VALUE);
             final String signature = buf.readBoolean() ? buf.readString(Short.MAX_VALUE) : null;
-            profile.getProperties().put(name, new Property(name, value, signature));
+            propertiesBuilder.put(name, new Property(name, value, signature));
         }
+      final ImmutableMultimap<String, Property> propertiesMap = propertiesBuilder.build();
+      return new PropertyMap(propertiesMap);
     }
 }
