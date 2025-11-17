@@ -3,9 +3,9 @@ package one.oktw.mixin.hack;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.login.ServerboundHelloPacket;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,18 +18,18 @@ import static one.oktw.VelocityLib.PLAYER_INFO_CHANNEL;
 import static one.oktw.VelocityLib.PLAYER_INFO_PACKET;
 
 @SuppressWarnings("UnstableApiUsage")
-@Mixin(ServerLoginNetworkHandler.class)
-public class ServerLoginNetworkHandler_EarlySendPacket {
+@Mixin(ServerLoginPacketListenerImpl.class)
+public class ServerLoginPacketListener_EarlySendPacket {
     @Shadow
     @Final
-    ClientConnection connection;
+    Connection connection;
     @Shadow
     @Nullable
-    private GameProfile profile;
+    private GameProfile authenticatedProfile;
 
-    @Inject(method = "onHello", at = @At(value = "HEAD"), cancellable = true)
-    private void earlySend(LoginHelloC2SPacket packet, CallbackInfo ci) {
-        if (profile != null) return; // Already receive profile form velocity.
+    @Inject(method = "handleHello", at = @At(value = "HEAD"), cancellable = true)
+    private void earlySend(ServerboundHelloPacket packet, CallbackInfo ci) {
+        if (authenticatedProfile != null) return; // Already receive profile form velocity.
 
         ServerLoginNetworkAddon addon = (ServerLoginNetworkAddon) ((NetworkHandlerExtensions) this).getAddon();
         connection.send(addon.createPacket(PLAYER_INFO_CHANNEL, PLAYER_INFO_PACKET));

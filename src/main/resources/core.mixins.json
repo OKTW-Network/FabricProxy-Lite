@@ -4,8 +4,8 @@
   "package": "one.oktw.mixin.core",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ClientConnection_AddressAccessor",
-    "ServerLoginNetworkHandlerAccessor"
+    "ConnectionAccessor",
+    "ServerLoginPacketListenerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

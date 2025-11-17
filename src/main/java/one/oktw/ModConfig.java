@@ -18,14 +18,14 @@ public class ModConfig {
 
     public static ModConfig load(Path configPath) {
         ModConfig config;
-        if(Files.exists(configPath)) {
+        if (Files.exists(configPath)) {
             config = new Toml().read(configPath.toFile()).to(ModConfig.class);
         } else {
             config = new ModConfig();
         }
 
         File configFile = configPath.toFile();
-        if(!configFile.exists() || configFile.canWrite()) {
+        if (!configFile.exists() || configFile.canWrite()) {
             try {
                 new TomlWriter().write(config, configFile);
             } catch (IOException e) {
@@ -36,31 +36,31 @@ public class ModConfig {
         }
 
         String envHackOnlineMode = System.getenv("FABRIC_PROXY_HACK_ONLINE_MODE");
-        if(envHackOnlineMode != null) {
+        if (envHackOnlineMode != null) {
             config.hackOnlineMode = Boolean.parseBoolean(envHackOnlineMode);
         }
 
         String envHackEarlySend = System.getenv("FABRIC_PROXY_HACK_EARLY_SEND");
-        if(envHackEarlySend != null) {
+        if (envHackEarlySend != null) {
             config.hackEarlySend = Boolean.parseBoolean(envHackEarlySend);
         }
 
         String envHackMessageChain = System.getenv("FABRIC_PROXY_HACK_MESSAGE_CHAIN");
-        if(envHackMessageChain != null) {
+        if (envHackMessageChain != null) {
             config.hackMessageChain = Boolean.parseBoolean(envHackMessageChain);
         }
 
         String envDisconnectMessage = System.getenv("FABRIC_PROXY_DISCONNECT_MESSAGE");
-        if(envDisconnectMessage != null) {
+        if (envDisconnectMessage != null) {
             config.disconnectMessage = envDisconnectMessage;
         }
 
         String envSecret = System.getenv("FABRIC_PROXY_SECRET");
-        if(envSecret != null) {
+        if (envSecret != null) {
             config.secret = envSecret;
         } else {
             String envSecretFile = System.getenv("FABRIC_PROXY_SECRET_FILE");
-            if(envSecretFile != null) {
+            if (envSecretFile != null) {
                 try {
                     config.secret = Files.readString(Path.of(envSecretFile));
                 } catch (IOException e) {
