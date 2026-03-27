@@ -3,14 +3,14 @@ package one.oktw;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
+import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.login.ServerboundHelloPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.text.Text;
-import one.oktw.mixin.core.ClientConnection_AddressAccessor;
-import one.oktw.mixin.core.ServerLoginNetworkHandlerAccessor;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
+import one.oktw.mixin.core.ConnectionAccessor;
+import one.oktw.mixin.core.ServerLoginPacketListenerAccessor;
 import org.apache.logging.log4j.LogManager;
 
 class PacketHandler {
@@ -20,43 +20,43 @@ class PacketHandler {
         this.config = config;
     }
 
-    void handleVelocityPacket(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
+    void handleVelocityPacket(MinecraftServer server, ServerLoginPacketListenerImpl handler, boolean understood, FriendlyByteBuf buf, ServerLoginNetworking.LoginSynchronizer synchronizer, PacketSender ignored) {
         if (!understood) {
-            handler.disconnect(Text.of(config.getAbortedMessage()));
+            handler.disconnect(Component.nullToEmpty(config.getAbortedMessage()));
             return;
         }
 
         synchronizer.waitFor(server.submit(() -> {
             try {
                 if (!VelocityLib.checkIntegrity(buf)) {
-                    handler.disconnect(Text.of("Unable to verify player details"));
+                    handler.disconnect(Component.nullToEmpty("Unable to verify player details"));
                     return;
                 }
                 VelocityLib.checkVersion(buf);
             } catch (Throwable e) {
                 LogManager.getLogger().error("Secret check failed.", e);
-                handler.disconnect(Text.of("Unable to verify player details"));
+                handler.disconnect(Component.nullToEmpty("Unable to verify player details"));
                 return;
             }
 
-            ClientConnection connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
-            ((ClientConnection_AddressAccessor) connection).setAddress(new java.net.InetSocketAddress(VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) (connection.getAddress())).getPort()));
+            Connection connection = ((ServerLoginPacketListenerAccessor) handler).getConnection();
+            ((ConnectionAccessor) connection).setAddress(new java.net.InetSocketAddress(VelocityLib.readAddress(buf), ((java.net.InetSocketAddress) (connection.getRemoteAddress())).getPort()));
 
             GameProfile profile;
             try {
                 profile = VelocityLib.createProfile(buf);
             } catch (Exception e) {
                 LogManager.getLogger().error("Profile create failed.", e);
-                handler.disconnect(Text.of("Unable to read player profile"));
+                handler.disconnect(Component.nullToEmpty("Unable to read player profile"));
                 return;
             }
 
             if (config.getHackEarlySend()) {
-                ((ServerLoginNetworkHandlerAccessor) handler).setProfile(profile);
-                handler.onHello(new LoginHelloC2SPacket(profile.name(), profile.id()));
+                ((ServerLoginPacketListenerAccessor) handler).setAuthenticatedProfile(profile);
+                handler.handleHello(new ServerboundHelloPacket(profile.name(), profile.id()));
             }
 
-            ((ServerLoginNetworkHandlerAccessor) handler).setProfile(profile);
+            ((ServerLoginPacketListenerAccessor) handler).setAuthenticatedProfile(profile);
         }));
     }
 }

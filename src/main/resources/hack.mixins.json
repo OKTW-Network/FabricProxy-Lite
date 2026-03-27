@@ -3,11 +3,11 @@
   "minVersion": "0.8",
   "package": "one.oktw.mixin.hack",
   "plugin": "one.oktw.FabricProxyLite",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "ServerLoginNetworkHandler_EarlySendPacket",
-    "ServerLoginNetworkHandler_SkipKeyPacket",
-    "ServerPlayNetworkHandler_HackMessageChain"
+    "ServerGamePacketListener_HackMessageChain",
+    "ServerLoginPacketListener_EarlySendPacket",
+    "ServerLoginPacketListener_SkipKeyPacket"
   ],
   "injectors": {
     "defaultRequire": 1
