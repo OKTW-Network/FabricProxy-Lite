@@ -1,0 +1,19 @@
+[versions]
+project = "2.11.1"
+java = "25"
+minecraft = "26.1"
+
+# Check on https://fabricmc.net/develop
+fabric_loom="1.15-SNAPSHOT"
+fabric_loader="0.18.5"
+fabric_api="0.144.3+26.1"
+
+toml4j="0.7.2"
+
+[plugins]
+fabric_loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric_loom" }
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+toml4j = { module = "com.moandjiezana.toml:toml4j", version.ref = "toml4j" }

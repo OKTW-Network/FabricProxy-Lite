@@ -1,7 +1,7 @@
 package one.oktw.mixin.hack;
 
 import com.mojang.authlib.GameProfile;
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.login.ServerboundHelloPacket;
@@ -22,7 +22,7 @@ import static one.oktw.VelocityLib.PLAYER_INFO_PACKET;
 public class ServerLoginPacketListener_EarlySendPacket {
     @Shadow
     @Final
-    Connection connection;
+    private Connection connection;
     @Shadow
     @Nullable
     private GameProfile authenticatedProfile;
@@ -31,7 +31,7 @@ public class ServerLoginPacketListener_EarlySendPacket {
     private void earlySend(ServerboundHelloPacket packet, CallbackInfo ci) {
         if (authenticatedProfile != null) return; // Already receive profile form velocity.
 
-        ServerLoginNetworkAddon addon = (ServerLoginNetworkAddon) ((NetworkHandlerExtensions) this).getAddon();
+        ServerLoginNetworkAddon addon = (ServerLoginNetworkAddon) ((PacketListenerExtensions) this).getAddon();
         connection.send(addon.createPacket(PLAYER_INFO_CHANNEL, PLAYER_INFO_PACKET));
         ci.cancel();
     }

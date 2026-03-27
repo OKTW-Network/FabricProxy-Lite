@@ -8,7 +8,7 @@
     "james58899"
   ],
   "contact": {
-    "homepage": "https://github.com/OKTW-Network/FabricProxy-Lite",
+    "homepage": "https://mc.oktw.one/en",
     "sources": "https://github.com/OKTW-Network/FabricProxy-Lite"
   },
   "license": "MIT",
@@ -23,10 +23,10 @@
     "hack.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.14",
-    "fabric-networking-api-v1": "*",
-    "fabric-api": ">=0.100.1",
-    "minecraft": ">=1.21.9",
-    "java": ">=21"
+    "java": ">=${java}",
+    "minecraft": ">=${minecraft}",
+    "fabricloader": ">=${fabric_loader}",
+    "fabric-api": ">=${fabric_api}",
+    "fabric-networking-api-v1": "*"
   }
 }
