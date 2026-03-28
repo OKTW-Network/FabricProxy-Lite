@@ -34,6 +34,19 @@ jobs:
           cache-disabled: true
       - name: Build
         run: ./gradlew build
+      - name: SHA256 Checksum
+        if: ${{ runner.os == 'Linux' && matrix.java == '25' }} # Only upload artifacts built from LTS java on one OS
+        run: sha256sum build/libs/* >> sha256.txt
+      - name: Publish Checksum Output to Summary
+        if: ${{ runner.os == 'Linux' && matrix.java == '25' }} # Only upload artifacts built from LTS java on one OS
+        run: |
+          {
+            echo "### Artifact SHA256"
+            echo '```terraform'
+            cat sha256.txt
+            echo '```'
+            echo "### Gradle Summary"
+          } >> $GITHUB_STEP_SUMMARY
       - name: Capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '25' }} # Only upload artifacts built from LTS java on one OS
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
